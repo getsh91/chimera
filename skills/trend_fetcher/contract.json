@@ -1,0 +1,41 @@
+{
+  "name": "trend_fetcher",
+  "version": "0.1.0",
+  "entrypoint": "run",
+  "description": "Fetches and normalizes trends from MCP resources for a given niche and locale.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "niche": { "type": "string" },
+      "locale": { "type": "string", "description": "BCP-47 or simple locale like en-ET" },
+      "time_window_hours": { "type": "integer", "minimum": 1, "maximum": 168 },
+      "sources": { "type": "array", "items": { "type": "string" }, "description": "MCP resources (news://, twitter://, etc.)" }
+    },
+    "required": ["niche", "locale", "time_window_hours", "sources"]
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "trends": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "trend_id": { "type": "string" },
+            "title": { "type": "string" },
+            "summary": { "type": "string" },
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "citations": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["trend_id", "title", "summary", "score", "citations"]
+        }
+      },
+      "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+      "safety_tags": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["trends", "confidence_score", "safety_tags"]
+  }
+}

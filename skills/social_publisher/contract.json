@@ -1,0 +1,30 @@
+{
+  "name": "social_publisher",
+  "version": "0.1.0",
+  "entrypoint": "run",
+  "description": "Publishes content to a social platform via MCP tools (platform-agnostic).",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "platform": { "type": "string", "enum": ["twitter", "instagram", "threads"] },
+      "text_content": { "type": "string" },
+      "media_urls": { "type": "array", "items": { "type": "string" } },
+      "disclosure_level": { "type": "string", "enum": ["automated", "assisted", "none"] },
+      "dry_run": { "type": "boolean" }
+    },
+    "required": ["platform", "text_content", "disclosure_level", "dry_run"]
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "platform_post_id": { "type": ["string", "null"] },
+      "status": { "type": "string", "enum": ["simulated", "submitted", "failed"] },
+      "tool_call_audit_ref": { "type": "string" },
+      "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+      "safety_tags": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["platform_post_id", "status", "tool_call_audit_ref", "confidence_score", "safety_tags"]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "content_generator",
+  "version": "0.1.0",
+  "entrypoint": "run",
+  "description": "Generates on-brand content (caption/script) given a trend and persona constraints.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "persona_id": { "type": "string" },
+      "trend_id": { "type": "string" },
+      "content_type": { "type": "string", "enum": ["caption", "script", "reply"] },
+      "constraints": { "type": "array", "items": { "type": "string" } },
+      "required_resources": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["persona_id", "trend_id", "content_type", "constraints", "required_resources"]
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "text": { "type": "string" },
+      "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+      "safety_tags": { "type": "array", "items": { "type": "string" } },
+      "reasoning_trace": { "type": "string" }
+    },
+    "required": ["text", "confidence_score", "safety_tags", "reasoning_trace"]
+  }
+}
