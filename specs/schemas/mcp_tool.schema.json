@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/chimera/mcp_tool.schema.json",
+  "title": "McpToolDefinition",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "inputSchema": { "type": "object" }
+  },
+  "required": ["name", "description", "inputSchema"]
+}
