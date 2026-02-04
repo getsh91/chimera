@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/chimera/task.schema.json",
+  "title": "AgentTask",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "task_id": { "type": "string", "description": "uuid-v4-string" },
+    "task_type": {
+      "type": "string",
+      "enum": ["trend_scan", "generate_content", "reply_comment", "execute_transaction"]
+    },
+    "priority": { "type": "string", "enum": ["high", "medium", "low"] },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "goal_description": { "type": "string" },
+        "persona_constraints": { "type": "array", "items": { "type": "string" } },
+        "required_resources": { "type": "array", "items": { "type": "string" } },
+        "input_state_version": { "type": "string" }
+      },
+      "required": ["goal_description", "required_resources", "input_state_version"]
+    },
+    "assigned_worker_id": { "type": "string" },
+    "created_at": { "type": "string", "description": "ISO-8601 timestamp" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "review", "complete"]
+    }
+  },
+  "required": ["task_id", "task_type", "priority", "context", "created_at", "status"]
+}
