@@ -1,0 +1,26 @@
+PROJECT: Project Chimera — Autonomous Influencer Network (Spec-Driven Development)
+
+PRIME DIRECTIVE
+- NEVER write or modify implementation code until you have checked the relevant files in `specs/`.
+- Specs are the single source of truth. If specs are missing or ambiguous, write/adjust specs first.
+
+WORKFLOW (MANDATORY)
+1) Restate the user goal in 1-2 sentences.
+2) Identify the exact spec files/sections that govern the change.
+3) Propose a plan (steps + files to touch).
+4) Only then write code/tests.
+5) Keep changes minimal, explicit, and traceable.
+
+ARCHITECTURAL CONSTRAINTS
+- MCP-only external interaction: no direct API calls to social platforms in core logic.
+- Swarm roles: Planner → Worker → Judge. Judge is the quality gate and HITL router.
+- All outputs must include confidence_score + safety_tags; sensitive topics must route to HITL.
+
+SECURITY
+- Never commit secrets. Use .env.example for placeholders.
+- Never log private keys, tokens, or wallet secrets.
+- Prefer allowlists, schema validation, and least privilege.
+
+TESTING & GOVERNANCE
+- Tests define the “empty slots”. Prefer failing tests before implementations.
+- If modifying interfaces, update schemas/contracts and tests together.

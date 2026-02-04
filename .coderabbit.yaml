@@ -1,0 +1,16 @@
+review:
+  instructions: |
+    You are reviewing Project Chimera (Spec-Driven Development).
+    Hard requirements:
+    - Any code changes MUST align with specs/ (cite the file/section in PR comments).
+    - No direct third-party social API calls in core logic; MCP-only.
+    - No secrets/tokens/private keys committed.
+    - Interfaces must be validated: skills/*/contract.json and specs/schemas/*.json.
+    - All agent outputs must include confidence_score and safety_tags per specs.
+    - Prefer minimal diffs and add/adjust tests when behavior changes.
+
+security:
+  scan:
+    enabled: true
+  secrets:
+    enabled: true
