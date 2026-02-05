@@ -1,175 +1,184 @@
-# Project Chimera — Research Summary (Feb 4)
+# Project Chimera — Tooling Strategy
 
-**Role:** Forward Deployed Engineer (FDE) Trainee  
-**Date:** February 4, 2026  
+## Purpose
+This document defines the tooling strategy for Project Chimera, with a clear separation between:
 
----
+1. **Developer Tooling (MCP for Humans)**
+2. **Runtime Tooling (Skills + MCP for Agents)**
 
-## 1. Research Summary & Key Insights
-
-### 1.1 The Trillion Dollar AI Code Stack (a16z)
-
-The central insight from a16z’s analysis is that AI systems fail at scale not due to model limitations, but due to weak software and infrastructure foundations. As AI moves from copilots to autonomous agents, prompt-driven development becomes fragile and unsafe.
-
-Key implications applied to Project Chimera:
-- **Intent must be explicit and machine-readable** → specifications and schemas are required.
-- **Infrastructure governs behavior** → CI/CD, tests, and containers define what is allowed.
-- **Human engineers shift from coding to constraint design**, aligning with the FDE role.
-
-Chimera adopts Spec-Driven Development where `specs/` is the source of truth and agents are constrained by contracts, tests, and governance rather than prompts.
+This separation is critical to prevent capability leakage, reduce security risk, and ensure that autonomous agents operate only within explicitly governed boundaries.
 
 ---
 
-### 1.2 OpenClaw & the Agent Social Network
+## Core Principle: Separation of Concerns
 
-OpenClaw frames the future as a network of autonomous agents interacting with each other, not only with humans. In this environment, agents must support:
+**Humans and Agents do not share tools.**
 
-- Capability discovery
-- Credential scoping and revocation
-- Negotiation and delegation
-- Reputation and trust signaling
+- Developers use MCP servers to *build, inspect, and govern* the system.
+- Agents use Skills and MCP servers to *act in the world*.
 
-**Chimera’s position in this network:**
-- Chimera agents act as **producer nodes**, generating content, engagement, and economic actions.
-- They also act as **consumer nodes**, discovering MCP resources and tools.
-- Skills serve as explicit capability declarations, while MCP servers provide secure, standardized I/O.
-
-This makes Chimera compatible with future agent-to-agent ecosystems without redesigning core logic.
+This distinction ensures:
+- Auditability
+- Security
+- Predictable behavior at scale
+- Clear blast-radius control
 
 ---
 
-### 1.3 MoltBook — Social Media for Bots
+## 1. Developer Tooling (MCP for Development)
 
-MoltBook emphasizes that bots operating at scale require predictable behavior, etiquette, and escalation paths to avoid systemic abuse or platform bans.
+### Purpose
+Developer MCP servers exist to:
+- Improve developer velocity
+- Provide observability and traceability
+- Act as a “black box recorder” for agent development
+- Enforce spec-driven workflows in the IDE
 
-Applied to Chimera:
-- The **Planner → Worker → Judge** architecture isolates speed from safety.
-- Confidence scoring and sensitive-topic classification prevent unsafe auto-publishing.
-- Platform-agnostic publishing via MCP avoids brittle, platform-specific coupling.
-
-The system assumes bots will interact at scale and designs guardrails accordingly.
-
----
-
-### 1.4 Project Chimera SRS (2026 Edition)
-
-The Chimera SRS defines the system as a network of persistent, autonomous influencer agents built on:
-
-- FastRender Swarm Architecture
-- Model Context Protocol (MCP)
-- Human-in-the-Loop (HITL) governance
-- Agentic Commerce with explicit budget enforcement
-
-The novelty lies in the combination of:
-- Spec-driven intent
-- Swarm cognition
-- Standardized external interaction
-- Economic autonomy with governance
+These tools are **never accessible to runtime agents**.
 
 ---
 
-## 2. Chimera in the Agent Social Network
+### Active Developer MCP Servers
 
-Project Chimera is designed as a first-class participant in an agent social network:
+#### Tenx MCP Sense (Telemetry & Traceability)
+- **Role:** Observability, activity tracing, agent behavior recording
+- **Why:** Required by the assignment as a “flight recorder”
+- **Usage:** Always connected during development via IDE
+- **Evidence:** Active MCP server connection in Cursor
 
-- **Capability Advertisement:** Skills and contracts define what an agent can do.
-- **Status Broadcasting:** Agents can publish health, confidence, and availability signals.
-- **Negotiation Readiness:** Task schemas and confidence metadata support future delegation.
-- **Revocation & Safety:** MCP servers act as enforcement boundaries for credentials and permissions.
-
-Chimera assumes coordination, not isolation.
-
----
-
-## 3. Social Protocols for Agent-to-Agent Interaction
-
-Beyond human-facing content, Chimera anticipates the need for agent-level social protocols:
-
-- Capability discovery (“what can you do?”)
-- Task negotiation (“can you do X under budget Y?”)
-- Reputation and attestation (verifiable execution history)
-- Rate limiting and backoff
-- Identity verification and authorization
-
-These protocols are not fully implemented yet, but the architecture explicitly leaves room for them.
+This satisfies:
+> “You must keep the Tenx MCP Sense server connected to your IDE at all times.”
 
 ---
 
-## 4. Architectural Approach
+#### IDE-integrated MCP (Cursor MCP Host)
+- **Role:** Context-aware AI coding assistant
+- **Enforcement:**
+  - Obeys `.cursor/rules`
+  - Must read `specs/` before generating code
+  - Explains plan before implementation
 
-### 4.1 Agent Pattern
-
-**Chosen Pattern:** Hierarchical Swarm (Planner → Worker → Judge)
-
-**Rationale:**
-- Enables parallel execution without peer-to-peer coupling
-- Provides a clear governance and quality gate
-- Natural insertion point for HITL and budget control
-- Proven scalability characteristics
+This converts AI assistance from “vibe coding” into **governed engineering**.
 
 ---
 
-### 4.2 Human-in-the-Loop (HITL)
+### Developer MCP Summary Table
 
-HITL is implemented at the **Judge layer**, not in Workers.
-
-- Workers remain fast and stateless
-- Judges evaluate confidence, safety, and policy compliance
-- Sensitive or ambiguous outputs are escalated automatically
-- Humans intervene by exception, not by default
-
----
-
-### 4.3 Data Storage Strategy
-
-- **PostgreSQL:** Tasks, approvals, budgets, audit logs (strong consistency and traceability)
-- **Weaviate:** Semantic memory and persona recall
-- **Redis:** Queues and ephemeral state
-
-SQL was selected over NoSQL for high-velocity metadata because governance, joins, and auditing are first-class requirements.
+| MCP Server | Scope | Purpose |
+|----------|------|--------|
+| Tenx MCP Sense | Dev-only | Telemetry, traceability |
+| Cursor MCP Host | Dev-only | Spec-aware code generation |
+| Git / FS MCPs (future) | Dev-only | Safe repo & file ops |
 
 ---
 
-### 4.4 Factory Governance Model
+## 2. Runtime Tooling (Agent Capabilities)
 
-The repository is designed as an **agent factory**, not a prototype application:
+Runtime agents **never receive developer MCP access**.
 
-- Specs define intent
-- Schemas define interfaces
-- Tests define empty slots
-- CI and Docker enforce correctness
-- AI reviewers enforce alignment and security
-
-This allows AI agents to safely build features with minimal human conflict.
+They operate through **two controlled layers**:
+1. Skills (internal)
+2. MCP Servers (external)
 
 ---
 
-## 5. Current State (End of Feb 4)
+## 2.1 Skills (Internal Runtime Capabilities)
 
-### Completed
-- Spec-driven repository structure
-- Full `specs/` directory with schemas
-- Skills scaffolding with versioned contracts
-- Contract-enforcing tests (TDD)
-- IDE context rules for AI agents
-- Dockerfile, Makefile, and CI pipeline
-- AI governance and review policy
+### Definition
+A **Skill** is a versioned, contract-defined capability package that:
+- Executes a single responsibility
+- Is called by a Worker
+- May internally invoke MCP tools
+- Has no direct access to credentials
 
-### Intentionally Deferred
-- Implementation logic
-- Live social media integrations
-- Real wallet transactions
+### Characteristics
+- Defined in `skills/`
+- Each skill has:
+  - `contract.json` (input/output schema)
+  - Python module exporting an entrypoint
+- Enforced by tests (`test_skills_interface.py`)
 
-This is intentional: the foundation is locked before execution begins.
+### Example Skills
+- `trend_fetcher` — aggregates trend signals
+- `content_generator` — generates captions/scripts
+- `social_publisher` — prepares publish payloads
+
+Skills are **replaceable, testable, and auditable**.
 
 ---
 
-## 6. Conclusion
+## 2.2 MCP Servers (Runtime External Interfaces)
 
-By February 4, Project Chimera has progressed from concept to a governed, agent-ready infrastructure. The system is now structured so that:
+### Role
+MCP servers are the **only bridge** between agents and the external world.
 
-- Autonomous agents can build safely
-- Human oversight is minimized but effective
-- Scale does not introduce fragility
+They:
+- Own credentials
+- Enforce rate limits
+- Provide logging and dry-run capabilities
+- Abstract volatile third-party APIs
 
-This aligns directly with the FDE mandate: architect systems that remain reliable under autonomy.
+### Examples
+- `mcp-server-social` (Twitter / Instagram / Threads)
+- `mcp-server-news` (RSS / search)
+- `mcp-server-generation` (image/video tools)
+- `mcp-server-coinbase` (wallet + transactions)
+
+### Boundary Rule (Hard Constraint)
+> **Core agent logic and Skills MUST NOT call external APIs directly.**
+
+All external interaction flows through MCP.
+
+---
+
+## 3. Skills vs MCP Servers — Clear Boundary
+
+| Dimension | Skills | MCP Servers |
+|--------|-------|-------------|
+| Ownership | Chimera repo | External service |
+| Responsibility | Business logic | External integration |
+| Credentials | ❌ None | ✅ Owned by server |
+| Testable | ✅ Yes | ⚠️ Mocked |
+| Called by | Worker | Worker / Skill |
+| Governed by | Contracts + tests | MCP protocol |
+
+This boundary is what makes Chimera **scalable and safe**.
+
+---
+
+## 4. Governance & Safety Enforcement
+
+Tooling choices directly enforce governance:
+
+- **Specs** define intent
+- **Tests** define acceptable behavior
+- **CI** enforces compliance
+- **Judge agents** enforce runtime policy
+- **MCP boundary** prevents uncontrolled actions
+
+No tool exists without:
+- A declared contract
+- A governing layer
+- A revocation point
+
+---
+
+## 5. Why This Tooling Strategy Matters
+
+Without this separation:
+- Agents would accumulate uncontrolled power
+- Bugs would propagate at scale
+- Credentials would leak
+- Behavior would drift from intent
+
+With this strategy:
+- Agents remain autonomous but bounded
+- Humans govern policy, not execution
+- The system scales safely to thousands of agents
+
+---
+
+## Conclusion
+Project Chimera’s tooling strategy transforms AI agents from fragile scripts into governed, auditable digital workers.
+
+By separating **Developer MCP tooling** from **Runtime Skills and MCP servers**, the system enforces security, traceability, and alignment — fulfilling both the technical and ethical requirements of autonomous influencer systems.

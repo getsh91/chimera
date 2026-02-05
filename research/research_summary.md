@@ -1,8 +1,4 @@
-# Project Chimera — Research Summary (Feb 4)
-
-**Role:** Forward Deployed Engineer (FDE) Trainee  
-**Date:** February 4, 2026  
-
+# Project Chimera — Research Summary 
 ---
 
 ## 1. Research Summary & Key Insights
